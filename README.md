@@ -24,6 +24,10 @@ class YourInstance < Instance
   attr_accessors :foo, :bar
   instance_indices :index
 end
+
+class User < Instance
+  instance_indices :email
+end
 ```
 
 #Inserting instances
@@ -31,6 +35,8 @@ end
 ```ruby
 app = YourAppClass.new
 app.absorb YourInstance.new(index: "foobar")
+
+app.absorb User.new(email: "foo@bar.com")
 ```
 
 #Retrieving instances
@@ -39,7 +45,6 @@ app.absorb YourInstance.new(index: "foobar")
 app.emit_your_instance_by_index "foobar"
 #=> your_instance
 
-# Or a realish world example
 app.emit_user_by_email "foo@bar.com"
 #=> user
 ```
