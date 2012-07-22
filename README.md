@@ -8,7 +8,7 @@ The Blob is a memory based instance storage system.
 ```ruby
 require 'the_blob'
 
-class YourClass
+class YourAppClass
   include TheBlob
 end
 ```
@@ -37,6 +37,9 @@ app.absorb YourInstance.new(index: "foobar")
 
 ```ruby
 app.emit_your_instance_by_index "foobar"
+#=> your_instance
 
+# Or a realish world example
 app.emit_user_by_email "foo@bar.com"
+#=> user
 ```
