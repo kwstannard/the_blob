@@ -29,7 +29,7 @@ end
 #Inserting instances
 
 ```ruby
-app = YourClass.new
+app = YourAppClass.new
 app.absorb YourInstance.new(index: "foobar")
 ```
 
