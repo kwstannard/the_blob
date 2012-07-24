@@ -1,9 +1,9 @@
 require 'handlers/instance_handler'
+require 'memory_persister'
 
 describe InstanceHandler do
-
   let(:subj_class) { Class.new }
-  let(:subject) { subj_class.new }
+  subject {subj_class.new memory: MemoryPersister }
 
   let(:user) { User.new(email: double) }
   let(:user2) { User.new(email: double) }
@@ -13,29 +13,9 @@ describe InstanceHandler do
     subj_class.class_eval { include InstanceHandler }
   end
 
-  it "requires all files in the instance folder" do
-    subject.stub!(:create_methods)
-    expect{ Dog }.to_not raise_error
-    expect{ User }.to_not raise_error
+  it 'can absorb and return and instance' do
+    subject.absorb user
+    subject.emit_user_by_email(user.email).should be(user)
   end
-
-  it "can retrieve an instance via one of its indexes" do
-    subject.absorb(user)
-    subject.emit_user_by_email(user.email).should == user
-    subject.emit_user_by_id(user.id).should == user
-  end
-
-  it 'raises InstanceNotFound if nothing is found' do
-    error = subj_class::InstanceNotFound
-    expect{ subject.emit_user_by_email(user.email) }.to raise_error(error)
-  end
-
-  it "can return a list of instances of a given class" do
-    subject.absorb(user)
-    subject.absorb(user2)
-    subject.users.should == [user, user2]
-  end
-
-  #TODO make sure that inserting into subject.users does not affect the blob
 
 end
