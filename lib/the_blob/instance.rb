@@ -36,4 +36,8 @@ module Instance
     @id
   end
 
+  def ==(instance_2)
+    self.class == instance_2.class && id == instance_2.id
+  end
+
 end

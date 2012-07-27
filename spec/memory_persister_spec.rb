@@ -8,10 +8,19 @@ describe MemoryPersister::MemoryContainer do
   let(:user2) { User.new(email: double) }
   let(:dog) { Dog.new(name: double, dog_tag: double) }
 
-  it "can retrieve an instance via one of its indexes" do
-    subject.absorb(user)
-    subject.emit_user_by_email(user.email).should == user
-    subject.emit_user_by_id(user.id).should == user
+#  it "can retrieve an instance via one of its indexes" do
+#    subject.absorb(user)
+#    subject.emit_user_by_email(user.email).should be user
+#    subject.emit_user_by_id(user.id).should be user
+#  end
+
+  context 'thread safe' do
+    it 'passes dups out on emission' do
+      subject.absorb user
+      emission = subject.emit_user_by_email(user.email)
+      emission.should_not be user
+      emission.email.should eq user.email
+    end
   end
 
   it 'raises InstanceNotFound if nothing is found' do
@@ -54,7 +63,7 @@ describe MemoryPersister do
   it 'ensures old instances are deleted' do
     old_user = User.new email: double
     subject.absorb old_user
-    subject.emit_user_by_email(old_user.email).should be(old_user)
+    subject.emit_user_by_email(old_user.email).should eq old_user 
 
     4.times { subject.absorb User.new email: double }
     error = MemoryPersister::InstanceNotFound

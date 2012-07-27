@@ -15,7 +15,7 @@ describe InstanceHandler do
 
   it 'can absorb and return and instance' do
     subject.absorb user
-    subject.emit_user_by_email(user.email).should be(user)
+    subject.emit_user_by_email(user.email).should eq user
   end
 
 end

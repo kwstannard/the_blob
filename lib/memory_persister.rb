@@ -74,7 +74,7 @@ class MemoryPersister::MemoryContainer
       instance_eval <<-CODE
         def emit_#{klass.underscore}_by_#{index}(id)
           instance = instances["#{klass}"]["__#{index}"][id]
-          instance || raise(MemoryPersister::InstanceNotFound)
+          instance && instance.dup || raise(MemoryPersister::InstanceNotFound)
         end
       CODE
     end

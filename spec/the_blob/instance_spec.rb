@@ -35,4 +35,9 @@ describe Instance do
     bar_class.get_instance_indices.should == [:name_last, :id]
   end
 
+  it 'is equal to anything with the same id and class' do
+    foo.should_not eq foo_class.new
+    foo.dup.should eq foo
+  end
+
 end
