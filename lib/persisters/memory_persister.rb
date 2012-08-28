@@ -6,34 +6,34 @@ class MemoryPersister
   def initialize(klass_list, options = {})
     klass_list.each{ |klass| make_index_getters(klass) }
     sub_capacity = (options[:capacity] || 100000) / 2
-    @new_persister = MemoryContainer.new klass_list, capacity: sub_capacity
-    @old_persister = MemoryContainer.new klass_list, capacity: sub_capacity
+    @new_container = MemoryContainer.new klass_list, capacity: sub_capacity
+    @old_container = MemoryContainer.new klass_list, capacity: sub_capacity
   end
 
   def absorb(instance)
-    @new_persister.absorb instance
+    @new_container.absorb instance
   rescue MemoryPersister::Full
-    rotate_persisters
+    rotate_containers
     absorb instance
   end
 
   private
-  def rotate_persisters
-    @old_persister.clear
-    p = @new_persister
-    @new_persister = @old_persister
-    @old_persister = p
+  def rotate_containers
+    @old_container.clear
+    p = @new_container
+    @new_container = @old_container
+    @old_container = p
   end
 
   def make_index_getters(klass)
     klass.get_instance_indices.each do |index|
       instance_eval <<-CODE
         def emit_#{klass.underscore}_by_#{index}(id)
-          @new_persister.emit_#{klass.underscore}_by_#{index} id
+          @new_container.emit_#{klass.underscore}_by_#{index} id
         rescue MemoryPersister::InstanceNotFound
-          instance = @new_persister.emit_#{klass.underscore}_by_#{index} id
-          @new_persister.absorb instance
-          user
+          instance = @old_container.emit_#{klass.underscore}_by_#{index} id
+          @new_container.absorb instance
+          instance
         end
       CODE
     end
@@ -81,7 +81,7 @@ class MemoryPersister::MemoryContainer
   end
 
   def instances
-    @instances ||= new_instances_hash
+    @instances
   end
 
   def new_instances_hash
