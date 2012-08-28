@@ -1,5 +1,5 @@
 require 'handlers/instance_handler'
-require 'memory_persister'
+require 'persisters/memory_persister'
 
 describe InstanceHandler do
   let(:subj_class) { Class.new }
