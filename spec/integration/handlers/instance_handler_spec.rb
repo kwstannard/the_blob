@@ -1,9 +1,8 @@
 require 'handlers/instance_handler'
-require 'persisters/memory_persister'
 
 describe InstanceHandler do
   let(:subj_class) { Class.new }
-  subject {subj_class.new memory: MemoryPersister }
+  subject {subj_class.new}
 
   let(:user) { User.new(email: double) }
   let(:user2) { User.new(email: double) }

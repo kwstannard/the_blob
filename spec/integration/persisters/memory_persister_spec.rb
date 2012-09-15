@@ -24,7 +24,7 @@ describe MemoryPersister::MemoryContainer do
   end
 
   it 'raises InstanceNotFound if nothing is found' do
-    error = MemoryPersister::InstanceNotFound
+    error = TheBlob::InstanceNotFound
     expect{ subject.emit_user_by_email(user.email) }.to raise_error(error)
   end
 
@@ -32,7 +32,7 @@ describe MemoryPersister::MemoryContainer do
     it 'removes all instances from the index hash' do
       subject.absorb user
       subject.clear
-      error = MemoryPersister::InstanceNotFound
+      error = TheBlob::InstanceNotFound
       expect{ subject.emit_user_by_email(user.email) }.to raise_error(error)
     end
     it 'resets its capacity left' do
@@ -66,7 +66,7 @@ describe MemoryPersister do
     subject.emit_user_by_email(old_user.email).should eq old_user
 
     6.times { subject.absorb User.new email: double }
-    error = MemoryPersister::InstanceNotFound
+    error = TheBlob::InstanceNotFound
     expect{ subject.emit_user_by_email(old_user.email) }.to raise_error(error)
   end
   it 'moves old instaces to new instances list if they are emitted' do

@@ -1,6 +1,5 @@
 class MemoryPersister
 
-  class InstanceNotFound < RuntimeError; end
   class Full < RuntimeError; end
 
   def initialize(klass_list, options = {})
@@ -30,7 +29,7 @@ class MemoryPersister
       instance_eval <<-CODE
         def emit_#{klass.underscore}_by_#{index}(id)
           @new_container.emit_#{klass.underscore}_by_#{index} id
-        rescue MemoryPersister::InstanceNotFound
+        rescue TheBlob::InstanceNotFound
           instance = @old_container.emit_#{klass.underscore}_by_#{index} id
           @new_container.absorb instance
           instance
@@ -74,7 +73,7 @@ class MemoryPersister::MemoryContainer
       instance_eval <<-CODE
         def emit_#{klass.underscore}_by_#{index}(id)
           instance = instances["#{klass}"]["__#{index}"][id]
-          instance && instance.dup || raise(MemoryPersister::InstanceNotFound)
+          instance && instance.dup || raise(TheBlob::InstanceNotFound)
         end
       CODE
     end

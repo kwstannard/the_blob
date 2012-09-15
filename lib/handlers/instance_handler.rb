@@ -2,7 +2,7 @@ require File.expand_path '../../the_blob/instance', __FILE__
 
 module InstanceHandler
 
-  def initialize(options = {})
+  def initialize(options = {memory: MemoryPersister})
     load_instances
     @memory_persister = options[:memory].new(@klass_list)
   end
